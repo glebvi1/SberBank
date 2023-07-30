@@ -1,0 +1,40 @@
+{% extends "system_admin/base.html" %}
+{% load static %}
+
+{% block content %}
+    <a href="{% url 'chat:room' current_user.room.id %}">Чат с пользователем</a>
+    {% if is_banned %}
+    <font color="red"><h1>Пользователь: {{ current_user.get_FIO }}</h1></font>
+    <font color="red"><h1>Забанен</h1></font>
+    {% else %}
+    <h1>Пользователь: {{ current_user.get_FIO }}</h1>
+    {% endif %}
+
+    {% for card in cards %}
+        <div class="card" style="width: 18rem;">
+            <img src="{% static 'bill/'|add:card.currency|add:'.jpg' %}" class="card-img-top" width="300">
+            <div class="card-body">
+                <h5 class="card-title">{{ card.balance_to_view }} {{ card.currency_to_view }}</h5>
+                <p class="card-text">{{ card.number_to_view }}</p>
+                <a href="{% url 'system_admin:card_view' current_user.id card.id %}" class="btn btn-primary">Открыть</a>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% if not is_banned %}
+    <form action="{% url 'system_admin:user_view' current_user.id %} " method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            {{ form.text }}
+        </div>
+
+        <input class="btn btn-primary" type="submit" value="Забанить">
+    </form>
+    {% else %}
+    <form action="{% url 'system_admin:unban' current_user.id %}" method="POST">
+    {% csrf_token %}
+    <input class="btn btn-primary" type="submit" value="Разбанить">
+    </form>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends base %}
+
+{% block content %}
+
+    {% if is_admin %}
+    <h1>Пользователь: {{ room.user.get_FIO }}</h1>
+    {% else %}
+    <h1>Чат с админом</h1>
+    {% endif %}
+
+    <ul class="list-group">
+        {% for message in messages %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ message.text }}
+
+                {% if is_admin %}
+                    {% if message.is_admin %}
+                        <span class="badge rounded-pill" style="background-color: gray">Вы</span>
+                    {% else %}
+                        <span class="badge rounded-pill" style="background-color: gray">Пользователь</span>
+                    {% endif %}
+                {% else %}
+                    {% if message.is_admin %}
+                        <span class="badge rounded-pill" style="background-color: gray">Админ</span>
+                    {% else %}
+                        <span class="badge rounded-pill" style="background-color: gray">Вы</span>
+                    {% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <form action="{% url 'chat:room' room.user.id %}" method="POST">
+        {% csrf_token %}
+        {{ form.text }}
+        <input class="btn btn-primary" type="submit" value="Отправить">
+    </form>
+
+{% endblock %}

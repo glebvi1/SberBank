@@ -1,0 +1,23 @@
+{% extends "cards/base.html" %}
+{% load static %}
+
+{% block content %}
+
+    <h3>Баланс: {{ card.balance_to_view }} {{ card.currency_to_view }}</h3>
+    <div class="card-group" style="width: 60rem;">
+        {% for currency, rate in currencies.items %}
+            <div class="card">
+                <img src="{% static 'bill/'|add:currency.value|add:'.jpg' %}" class="card-img-top" width="300" height="150">
+                <div class="card-body">
+                    <h5 class="card-title">{{ rate|my_round }} {{ card.currency_to_view }} = 1 {{ currency.to_view }}</h5>
+                    <p class="card-text">Баланс: {{ card.balance|round_balance:rate }} {{ currency.to_view }}</p>
+                    <form action="{% url 'cards:transfer_currency' card.id currency %}" method="POST">
+                        {% csrf_token %}
+                        <input class="btn btn-primary" type="submit" value="Перевести">
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

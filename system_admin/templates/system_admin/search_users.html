@@ -1,0 +1,80 @@
+{% extends "system_admin/base.html" %}
+
+
+{% block content %}
+
+    <form action="{% url 'system_admin:search_users' %}" method="GET">
+        <select name="type_search" id="type">
+            <option value="number" selected>Поиск по номеру карты</option>
+            <option value="email">Поиск по почте</option>
+            <option value="fio">Поиск по ФИО</option>
+        </select>
+
+        <input class="btn btn-primary" type="submit" value="Поиск" name="search_input">
+    </form>
+
+    {% if is_number_form %}
+        <h6>Поиск по номеру карты</h6>
+        <form action="{% url 'system_admin:search_users' %}" method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.number.id_for_label }}">
+                    Номер
+                </label>
+                {{ form.number }}
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Найти" name="number_input">
+        </form>
+
+    {% elif is_email_form %}
+        <h6>Поиск по почте</h6>
+        <form action="{% url 'system_admin:search_users' %}" method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">
+                    Почта
+                </label>
+                {{ form.email }}
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Найти" name="email_input">
+        </form>
+
+    {% elif is_fio_form %}
+        <h6>Поиск по ФИО</h6>
+        <form action="{% url 'system_admin:search_users' %}" method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}">
+                    Имя
+                </label>
+                {{ form.name }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.surname.id_for_label }}">
+                    Фамилия
+                </label>
+                {{ form.surname }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.patronymic.id_for_label }}">
+                    Отчество
+                </label>
+                {{ form.patronymic }}
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Найти" name="fio_input">
+        </form>
+    {% endif %}
+
+    {% if not is_number_form and not is_email_form and not is_fio_form %}
+        {% for user in users %}
+            <a href="{% url 'system_admin:user_view' user.id %}"><p>{{ user.get_FIO }}</p></a>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

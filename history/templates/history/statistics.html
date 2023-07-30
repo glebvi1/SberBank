@@ -1,0 +1,25 @@
+{% extends "cards/base.html" %}
+
+{% block content %}
+
+<h1>Расходы за день:</h1>
+{% for currency, summa in expense_for_day.items %}
+<p>{{ currency }}: {{ summa }}</p>
+{% endfor %}
+
+<h1>Доходы за день:</h1>
+{% for currency, summa in income_for_day.items %}
+<p>{{ currency }}: {{ summa }}</p>
+{% endfor %}
+
+<h1>Расходы за месяц:</h1>
+{% for currency, summa in expense_for_month.items %}
+<p>{{ currency }}: {{ summa }}</p>
+{% endfor %}
+
+<h1>Доходы за месяц:</h1>
+{% for currency, summa in income_for_month.items %}
+<p>{{ currency }}: {{ summa }}</p>
+{% endfor %}
+
+{% endblock %}

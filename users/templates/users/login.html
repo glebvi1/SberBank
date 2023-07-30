@@ -1,0 +1,40 @@
+{% extends "users/base.html" %}
+
+{% block content %}
+
+{% if form.non_field_errors %}
+<div>
+    <font color="red">{{ form.non_field_errors }}</font>
+</div>
+{% endif %}
+
+{% if messages %}
+<div>
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+
+
+<form action="{% url 'users:login' %}" method="POST">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">
+            Почта
+        </label>
+        {{ form.username }}
+    </div>
+    <div class="form-group">
+        <label for="{{ form.password.id_for_label }}">
+            Пароль
+        </label>
+        {{ form.password }}
+    </div>
+    <input class="btn btn-primary" type="submit" value="Авторизоваться">
+</form>
+
+<a href="/users/forgot_password">Забыли пароль?</a>
+
+{% endblock %}

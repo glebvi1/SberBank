@@ -1,0 +1,31 @@
+{% extends base %}
+{% load static %}
+{% load permission_tags %}
+
+{% block content %}
+
+<h1>Здравствуйте, {{ user.first_name }} {{ user.patronymic }}!</h1>
+
+{% if user|has_role:'banned_user' %}
+<font color="red"><h6>Уважаемый {{ user.first_name }} {{ user.patronymic }}, Вы были забанены в нашем банке!</h6></font>
+<h6>Причина: {{ user.ban.reason }}</h6>
+{% endif %}
+
+
+{% for card in object_list %}
+<div class="card" style="width: 18rem;">
+    {% if user|has_role:'banned_user' %}
+    <img src="{% static 'bill/BAN.jpg' %}" class="card-img-top" width="300">
+    {% else %}
+    <img src="{% static 'bill/'|add:card.currency|add:'.jpg' %}" class="card-img-top" width="300">
+    {% endif %}
+    <div class="card-body">
+        <h5 class="card-title">{{ card.balance_to_view }} {{ card.currency_to_view }}</h5>
+        <p class="card-text">{{ card.number_to_view }}</p>
+        <a href="{% url 'cards:my_card' card.id %}" class="btn btn-primary">Открыть</a>
+    </div>
+</div>
+{% endfor %}
+
+
+{% endblock %}

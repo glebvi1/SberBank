@@ -1,0 +1,58 @@
+{% extends "users/base.html" %}
+
+{% block content %}
+
+{% if form.errors %}
+<div>
+    <p>{{ form.errors }}</p>
+</div>
+{% endif %}
+
+<form action="{% url 'users:registration' %}" method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+        <label class="form-label" for="{{ form.first_name.id_for_label }}">
+            Имя
+        </label>
+        {{ form.first_name }}
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="{{ form.last_name.id_for_label }}">
+            Фамилия
+        </label>
+        {{ form.last_name }}
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="{{ form.patronymic.id_for_label }}">
+            Отчество
+        </label>
+        {{ form.patronymic }}
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="{{ form.username.id_for_label }}">
+            Почта
+        </label>
+        {{ form.username }}
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="{{ form.password1.id_for_label }}">Пароль</label>
+        {{ form.password1 }}
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="{{ form.password2.id_for_label }}">Подтвердите пароль</label>
+        {{ form.password2 }}
+    </div>
+
+    <div class="form-group">{{ form.captcha }}</div>
+
+    <input class="btn btn-primary" type="submit" value="Зарегистрироваться">
+
+</form>
+
+<a href="/users/forgot_password">Забыли пароль?</a>
+{% endblock %}

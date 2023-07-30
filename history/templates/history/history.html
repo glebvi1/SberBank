@@ -1,0 +1,76 @@
+{% extends base %}
+{% load permission_tags %}
+
+{% block content %}
+
+<h1>Баланс: {{ card.balance_to_view }} {{ card.currency_to_view }}</h1>
+
+{% if is_admin %}
+    <h1>Пользователь: {{ current_user.get_FIO }}</h1>
+{% endif %}
+
+
+    <ol class="list-group list-group-numbered">
+    {% for tr in object_list %}
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-2 me-auto">
+            {{ tr.time }}
+            {% if tr.type_transaction == USER_TRANSACTION %}
+                {% if tr.card == card %}
+                <div class="fw-bold"><b>{{ tr.card_transaction.user.get_FIO }}</b></div>
+                <font color="red">-{{ tr.summa|my_round }} {{ tr.currency|currency_to_view }}</font>
+                {% else %}
+                <div class="fw-bold"><b>{{ tr.card.user.get_FIO }}</b></div>
+                <font color="green">+{{ tr.summa|my_round }} {{ tr.currency|currency_to_view }}</font>
+                {% endif %}
+            {% else %}
+                <div class="fw-bold"><b>Курс: 1 {{ tr.currency|currency_to_view }} = {{ tr.rate|my_round }} {{ tr.currency_after_transaction|currency_to_view }}</b></div>
+                {{ tr.summa|my_round }} {{ tr.currency|currency_to_view }} ->
+                    {{ tr.summa|round_balance:tr.rate }} {{ tr.currency_after_transaction|currency_to_view }}
+            {% endif %}
+            </div>
+            <span class="badge bg-primary rounded-pill"></span>
+        </li>
+    {% endfor %}
+    </ol>
+
+    {% if is_paginated %}
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
+                    <a class="page-link"
+                       {% if is_admin %}
+                       href="{% if page_obj.has_previous %} {% url 'system_admin:paginator_history' current_user.id card.id page_obj.previous_page_number %} {% else %} # {% endif %}"
+                       {% else %}
+                       href="{% if page_obj.has_previous %} {% url 'history:paginator_history' card.id page_obj.previous_page_number %} {% else %} # {% endif %}"
+                       {% endif %}
+                       tabindex="-1" aria-disabled="true">
+                        Предыдущая
+                    </a>
+                </li>
+                {% for page in paginator.page_range %}
+                    <li class="page-item">
+                        {% if is_admin %}
+                        <a class="page-link" href="{% url 'system_admin:paginator_history' current_user.id card.id page %}">
+                        {% else %}
+                        <a class="page-link" href="{% url 'history:paginator_history' card.id page %}">
+                        {% endif %}
+                            {{ page }}
+                        </a>
+                    </li>
+                {% endfor %}
+                <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
+                    <a class="page-link"
+                       {% if is_admin %}
+                       href="{% if page_obj.has_next %} {% url 'system_admin:paginator_history' current_user.id card.id page_obj.next_page_number %} {% else %} # {% endif %}">
+                       {% else %}
+                       href="{% if page_obj.has_next %} {% url 'history:paginator_history' card.id page_obj.next_page_number %} {% else %} # {% endif %}">
+                       {% endif %}
+                        Следующая
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+    {% endif %}
+{% endblock %}

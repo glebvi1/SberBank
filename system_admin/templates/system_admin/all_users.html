@@ -1,0 +1,50 @@
+{% extends "system_admin/base.html" %}
+
+{% block content %}
+
+    <h1>Все пользователи</h1>
+
+<div class="list-group">
+    {% for user in object_list %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+        {% if user.room.is_closed %}
+            <a href="{% url 'system_admin:user_view' user.id %}" class="list-group-item-action">{{ user.get_FIO }}</a>
+        {% else %}
+
+            <a href="{% url 'system_admin:user_view' user.id %}" style="color:limegreen"
+               class="list-group-item-action">{{ user.get_FIO }}</a>
+            <a href="{% url 'chat:room' user.id %}" >
+                <span class="badge badge-primary badge-pill">Чат</span></a>
+{#            <a href="{% url 'chat:room' user.id %}" style="color:limegreen">Нужно ответить на сообщение!</a>#}
+        </li>
+        {% endif %}
+    {% endfor %}
+</div>
+    {% if is_paginated %}
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
+                    <a class="page-link"
+                       href="{% if page_obj.has_previous %} {% url 'system_admin:paginator' page_obj.previous_page_number %} {% else %} # {% endif %}"
+                       tabindex="-1" aria-disabled="true">
+                        Предыдущая
+                    </a>
+                </li>
+                {% for page in paginator.page_range %}
+                    <li class="page-item">
+                        <a class="page-link" href="{% url 'system_admin:paginator' page %}">
+                            {{ page }}
+                        </a>
+                    </li>
+                {% endfor %}
+                <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
+                    <a class="page-link"
+                       href="{% if page_obj.has_next %} {% url 'system_admin:paginator' page_obj.next_page_number %} {% else %} # {% endif %}">
+                        Следующая
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+    {% endif %}
+{% endblock %}
