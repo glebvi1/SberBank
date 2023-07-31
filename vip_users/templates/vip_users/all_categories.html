@@ -1,0 +1,10 @@
+{% extends "cards/base.html" %}
+
+{% block content %}
+{% for category in object_list %}
+
+    <p><b>{{ category.name }}</b></p>
+    <p>{{ category.description }}</p>
+
+{% endfor %}
+{% endblock %}
