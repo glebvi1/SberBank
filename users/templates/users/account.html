@@ -14,6 +14,10 @@
 
 <h1>Здравствуйте, {{ user.first_name }} {{ user.patronymic }}!</h1>
 
+{% if user|has_role:'vip_user' %}
+    <font color="#228b22"><h6>Вы VIP пользователь!</h6></font>
+{% endif %}
+
 {% if user|has_role:'banned_user' %}
 <font color="red"><h6>Уважаемый {{ user.first_name }} {{ user.patronymic }}, Вы были забанены в нашем банке!</h6></font>
 <h6>Причина: {{ user.ban.reason }}</h6>

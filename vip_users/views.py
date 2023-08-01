@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
+from rolepermissions.checkers import has_role
 from rolepermissions.decorators import has_role_decorator
 from rolepermissions.mixins import HasRoleMixin
 
@@ -18,6 +19,9 @@ from vip_users.services.vip_services import VIPService
 @login_required
 @has_role_decorator([SimpleUser])
 def buy_vip(request):
+    if has_role(request.user, VIPUser):
+        messages.error(request, "Вы уже VIP пользователь!")
+        return HttpResponseRedirect(reverse("users:account"))
     context = {"cards": Card.objects.filter(user=request.user)}
 
     if request.method == "POST":

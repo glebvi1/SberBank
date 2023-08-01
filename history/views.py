@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
+from rolepermissions.checkers import has_role
 from rolepermissions.mixins import HasRoleMixin
 
 from SberBank import CARD_TEMPLATE_BASE
@@ -24,7 +25,7 @@ class CardHistoryListView(HasRoleMixin, ListView):
         context = super().get_context_data(**kwargs)
 
         card = Card.objects.get(id=self.kwargs.get("card_id"))
-        is_vip = True
+        is_vip = has_role(self.request.user, VIPUser)
 
         context["card"] = card
         context["USER_TRANSACTION"] = BaseTransactionHistory.TYPE_TRANSACTION.USER

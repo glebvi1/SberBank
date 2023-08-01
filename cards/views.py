@@ -5,13 +5,14 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateView
-from rolepermissions.mixins import HasRoleMixin
 from rolepermissions.checkers import has_role
+from rolepermissions.decorators import has_role_decorator
+from rolepermissions.mixins import HasRoleMixin
+
 from SberBank.roles import SimpleUser, BannedUser
 from cards.forms import TransferMoneyByNumberForm
 from cards.models import Card
 from cards.services.cards_services import ParseService, TransferService
-from rolepermissions.decorators import has_role_decorator
 
 
 @login_required
