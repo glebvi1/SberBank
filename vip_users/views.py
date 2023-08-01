@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
 from django.views.generic.list import ListView
 from rolepermissions.checkers import has_role
 from rolepermissions.decorators import has_role_decorator
@@ -13,6 +14,7 @@ from SberBank.roles import VIPUser, SimpleUser
 from cards.models import Card
 from vip_users.forms import CategoryCreateForm
 from vip_users.models import Category
+from vip_users.services.vip_services import StatisticsService
 from vip_users.services.vip_services import VIPService
 
 
@@ -75,3 +77,52 @@ def bind_transaction(request, card_id, transaction_id):
         if not category_id == "None":
             VIPService().add_category_to_transaction(category_id, transaction_id)
     return HttpResponseRedirect(reverse("history:card_history", args=(card_id,)))
+
+
+class MonthStatisticsCategory(TemplateView):
+    template_name = "vip_users/statistics.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        statistics_plus, statistics_neg = StatisticsService().get_statistics_for_month(self.request.user, 8)
+        print(statistics_plus, statistics_neg)
+        return context
+
+
+
+"""
+[
+category1: {
+    RUB: int
+    DOL: int
+    EUR: int
+    YUA: int
+} 
+
+category2: {
+    RUB: int
+    DOL: int
+    EUR: int
+    YUA: int
+} 
+
+]
+"""
+
+"""
+
+RUB: {
+    category1: int
+    categroy2: int
+    ...
+    ...
+}
+
+Рубли, расходы:
+[cat1, cat2, cat3, ...]
+[s1, s2, s3, ...]
+Рубли, доходы:
+[cat1, cat2, cat3, ...]
+[s1, s2, s3, ...]
+
+"""

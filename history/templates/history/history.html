@@ -30,7 +30,7 @@
             {% endif %}
             </div>
 {#            <span class="badge bg-primary rounded-pill">#}
-                {% if is_vip %}
+                {% if is_vip and tr.type_transaction == USER_TRANSACTION %}
                 <form action="{% url 'vip_users:bind_transaction' card.id tr.id %}" method="POST">
                 {% csrf_token %}
                     <select name="select{{ tr.id }}">

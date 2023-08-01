@@ -16,6 +16,9 @@ class User(AbstractUser):
     def __str__(self):
         return f"Логин: {self.username}"
 
+    def __eq__(self, other):
+        return self.username == other.username
+
     def get_FIO(self):
         return self.last_name + " " + self.first_name + " " + self.patronymic
 

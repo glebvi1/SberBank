@@ -1,3 +1,6 @@
+import calendar
+from datetime import date
+
 from rolepermissions.roles import assign_role
 
 from SberBank.roles import VIPUser
@@ -26,3 +29,40 @@ class VIPService:
 
         transaction.category = category
         transaction.save()
+
+
+class StatisticsService:
+
+    def get_statistics_for_month(self, user, month):
+        statistics_plus = {}
+        statistics_neg = {}
+
+        for category in Category.objects.filter(user=user):
+            for transaction in UserTransactionHistory.objects.filter(category=category, time__range=self.__get_month_range(month)):
+                currency = transaction.currency
+
+                if transaction.card.user == user:
+                    self.__add_category(statistics_neg, currency, category.name, transaction.summa)
+                else:
+                    self.__add_category(statistics_plus, currency, category.name, transaction.summa)
+
+        return statistics_plus, statistics_neg
+
+    def __add_category(self, statistics, currency, name, summa):
+        if currency in statistics:
+            if name in statistics[currency]:
+                statistics[currency][name] += summa
+            else:
+                statistics[currency][name] = summa
+        else:
+            statistics[currency] = {name: summa}
+
+    def __get_month_range(self, month):
+        today = date.today().strftime("%d/%m/%Y").split("/")
+        year = int(today[2])
+        last_day = calendar.monthrange(year, month)[1]
+
+        start_date = date(year, month, 1)
+        end_date = date(year, month, last_day)
+
+        return start_date, end_date
