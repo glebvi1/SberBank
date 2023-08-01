@@ -29,7 +29,20 @@
                     {{ tr.summa|round_balance:tr.rate }} {{ tr.currency_after_transaction|currency_to_view }}
             {% endif %}
             </div>
-            <span class="badge bg-primary rounded-pill"></span>
+{#            <span class="badge bg-primary rounded-pill">#}
+                {% if is_vip %}
+                <form action="{% url 'vip_users:bind_transaction' card.id tr.id %}" method="POST">
+                {% csrf_token %}
+                    <select name="select{{ tr.id }}">
+                    <option value="None">-----</option>
+                        {% for category in categories %}
+                            <option>{{ category.name }}</option>
+                        {% endfor %}
+                    <input class="btn btn-primary" type="submit" value="Присвоить">
+                    </select>
+                </form>
+                {% endif %}
+{#            </span>#}
         </li>
     {% endfor %}
     </ol>

@@ -1,0 +1,26 @@
+{% extends "cards/base.html" %}
+
+{% block content %}
+
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h1>Текст...</h1>
+    <h6>Выберите карту: </h6>
+    <form action="{% url 'vip_users:buy_vip' %}" method="POST">
+        {% csrf_token %}
+        <select name="card_id">
+            <option value="None">-----</option>
+            {% for card in cards %}
+                <option value="{{ card.id }}">{{ card.balance }} {{ card.currency_to_view }}</option>
+            {% endfor %}
+        </select>
+        <input class="btn btn-primary" type="submit" value="Купить!">
+    </form>
+
+{% endblock %}

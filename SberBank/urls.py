@@ -21,6 +21,7 @@ urlpatterns = [
 
     path("users/", include("users.urls", namespace="users")),
     path("system_admin/", include("system_admin.urls", namespace="system_admin")),
+    path("vip_users/", include("vip_users.urls", namespace="vip_users")),
 
     path("cards/", include("cards.urls", namespace="cards")),
     path("history/", include("history.urls", namespace="history")),

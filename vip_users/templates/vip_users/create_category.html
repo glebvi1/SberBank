@@ -1,6 +1,15 @@
 {% extends "cards/base.html" %}
 
 {% block content %}
+
+{% if messages %}
+<div>
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+
 <form action="{% url 'vip_users:create_category' %}" method="POST">
     {% csrf_token %}
 

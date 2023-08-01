@@ -4,6 +4,14 @@
 
 {% block content %}
 
+{% if messages %}
+<div>
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+
 <h1>Здравствуйте, {{ user.first_name }} {{ user.patronymic }}!</h1>
 
 {% if user|has_role:'banned_user' %}
@@ -26,6 +34,5 @@
     </div>
 </div>
 {% endfor %}
-
 
 {% endblock %}

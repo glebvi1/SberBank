@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "history",
     "system_admin",
     "chat",
+    "vip_users",
 ]
 
 MIDDLEWARE = [

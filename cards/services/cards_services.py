@@ -1,14 +1,16 @@
 import random
-from django.core.mail import send_mail
+
 import requests
-from cards.models import Card
-from history.models import UserTransactionHistory, CurrencyTransactionHistory
+from django.core.mail import send_mail
+from rolepermissions.checkers import has_role
+
+from SberBank.roles import BannedUser
+from SberBank.settings import EMAIL_HOST_USER
 from cards import MESSAGE_EXIST_CARD, MESSAGE_NOT_ENOUGH_BALANCE, MESSAGE_NOT_EQ_CURRENCY, MESSAGE_MYSELF_TRANSFER, \
     MESSAGE_CONFIRM, MESSAGE_BAN_USER
-from SberBank.settings import EMAIL_HOST_USER
 from cards.models import CURRENCY_TO_VIEW
-from rolepermissions.checkers import has_role
-from SberBank.roles import BannedUser
+from cards.models import Card
+from history.models import UserTransactionHistory, CurrencyTransactionHistory
 
 
 class CardService:
@@ -71,7 +73,7 @@ class TransferService:
 
         self.__send_mail_to_user_currency(transaction)
 
-    def transfer(self, card1, card2, summa): # TODO: валюта!
+    def transfer(self, card1, card2, summa):
         """
         card1: карта, из которой снимают деньги
         card2: карта, на которую переводят

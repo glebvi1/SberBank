@@ -1,3 +1,6 @@
+{% load permission_tags %}
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,6 +21,12 @@
         {% if card is not None %}
         <a class="navbar-brand" href="{% url 'cards:currencies' card.id %}">Валюты</a>
         <a class="navbar-brand" href="{% url 'history:card_history' card.id %}">История</a>
+        {% else %}
+            {% if user|has_role:'vip_user' %}
+            <a class="navbar-brand" href="{% url 'vip_users:all_categories' %}">Категории</a>
+            {% else %}
+            <a class="navbar-brand" href="{% url 'vip_users:buy_vip' %}">VIP-подписка</a>
+            {% endif %}
         {% endif %}
         <a class="navbar-brand" href="{% url 'users:logout' %}">Выйти</a>
     </nav>
