@@ -36,7 +36,11 @@
                     <select name="select{{ tr.id }}">
                     <option value="None">-----</option>
                         {% for category in categories %}
-                            <option>{{ category.name }}</option>
+                            {% if tr.category.id == category.id %}
+                            <option value="{{ category.id }}" selected>{{ category.name }}</option>
+                            {% else %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endif %}
                         {% endfor %}
                     <input class="btn btn-primary" type="submit" value="Присвоить">
                     </select>
