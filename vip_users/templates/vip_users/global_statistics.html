@@ -1,0 +1,81 @@
+{% extends "cards/base.html" %}
+
+{% block content %}
+
+    {% for currency, stat in statistics_neg.items %}
+        <div>
+            <canvas id="chart_neg_{{ currency }}" width="500" height="400"></canvas>
+        </div>
+    {% endfor %}
+
+    {% for currency, stat in statistics_plus.items %}
+        <div>
+            <canvas id="chart_plus_{{ currency }}" width="500" height="400"></canvas>
+        </div>
+    {% endfor %}
+
+    <script>
+        {% for currency, stat in statistics_neg.items %}
+            var ctx = document.getElementById('chart_neg_{{ currency }}');
+
+            new Chart(ctx, {
+                type: 'pie',
+
+                data: {
+                    labels: [{% for name in stat.keys %} '{{ name }}', {% endfor %}],
+                    datasets: [{
+                        label: "Расходы",
+                        data: [{% for number in stat.values %} '{{ number|int1 }}', {% endfor %}],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Расходы за месяц в {{ currency }}"
+                        }
+                    }
+                }
+            });
+        {% endfor %}
+
+        {% for currency, stat in statistics_plus.items %}
+            var ctx = document.getElementById('chart_plus_{{ currency }}');
+
+            new Chart(ctx, {
+                type: 'pie',
+
+                data: {
+                    labels: [{% for name in stat.keys %} '{{ name }}', {% endfor %}],
+                    datasets: [{
+                        label: "Доходы",
+                        data: [{% for number in stat.values %} '{{ number|int1 }}', {% endfor %}],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Доходы за месяц в {{ currency }}"
+                        }
+                    }
+                }
+            });
+        {% endfor %}
+</script>
+
+{% endblock %}

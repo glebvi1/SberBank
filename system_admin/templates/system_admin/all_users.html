@@ -13,7 +13,7 @@
 
             <a href="{% url 'system_admin:user_view' user.id %}" style="color:limegreen"
                class="list-group-item-action">{{ user.get_FIO }}</a>
-            <a href="{% url 'chat:room' user.id %}" >
+            <a href="{% url 'chat:room' user.id %}">
                 <span class="badge badge-primary badge-pill">Чат</span></a>
 {#            <a href="{% url 'chat:room' user.id %}" style="color:limegreen">Нужно ответить на сообщение!</a>#}
         </li>

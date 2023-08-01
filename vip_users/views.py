@@ -79,15 +79,33 @@ def bind_transaction(request, card_id, transaction_id):
     return HttpResponseRedirect(reverse("history:card_history", args=(card_id,)))
 
 
-class MonthStatisticsCategory(TemplateView):
-    template_name = "vip_users/statistics.html"
+@method_decorator(login_required, name="dispatch")
+class MonthStatisticsCategory(HasRoleMixin, TemplateView):
+    allowed_roles = [VIPUser]
+    template_name = "vip_users/global_statistics.html"
+
+    def get_context_data(self, **kwargs):
+        # TODO: Сделать пагинацию по месяцам
+        context = super().get_context_data(**kwargs)
+        statistics_plus, statistics_neg = StatisticsService().get_global_statistics_for_month(self.request.user, 8)
+
+        context["statistics_plus"] = statistics_plus
+        context["statistics_neg"] = statistics_neg
+
+        return context
+
+
+@method_decorator(login_required, name="dispatch")
+class StatisticsForCategory(HasRoleMixin, TemplateView):
+    allowed_roles = [VIPUser]
+    template_name = "vip_users/category_statistics.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        statistics_plus, statistics_neg = StatisticsService().get_statistics_for_month(self.request.user, 8)
-        print(statistics_plus, statistics_neg)
+        category = Category.objects.get(id=self.kwargs["category_id"])
+        context["statistic"] = StatisticsService().get_statistics_for_category(self.request.user, category, 8)
+        print(context["statistic"])
         return context
-
 
 
 """

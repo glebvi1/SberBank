@@ -1,0 +1,44 @@
+{% extends "cards/base.html" %}
+
+{% block content %}
+
+    {% for currency, stat in statistic.items %}
+        <div>
+            <canvas id="chart_{{ currency }}" width="500" height="400"></canvas>
+        </div>
+    {% endfor %}
+
+    <script>
+        {% for currency, stat in statistic.items %}
+            var ctx = document.getElementById('chart_{{ currency }}');
+
+            new Chart(ctx, {
+                type: 'pie',
+
+                data: {
+                    labels: ["Доход", "Расход"],
+                    datasets: [{
+                        label: "",
+                        data: [{% for number in stat.values %} '{{ number|int1 }}', {% endfor %}],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "{{ currency }}"
+                        }
+                    }
+                }
+            });
+        {% endfor %}
+    </script>
+
+{% endblock %}
