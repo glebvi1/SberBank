@@ -1,6 +1,7 @@
 from django.urls import path
 
-from system_admin.views import UsersListView, UserView, CardHistoryView, search_users, unban
+from system_admin.views import (CardHistoryView, UsersListView, UserView,
+                                search_users, unban)
 
 app_name = "system_admin"
 

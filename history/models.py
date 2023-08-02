@@ -29,7 +29,6 @@ class CurrencyTransactionHistory(BaseTransactionHistory):
     currency_after_transaction = models.CharField(max_length=3, choices=Card.CURRENCY.choices)
     rate = models.FloatField(blank=False, null=False)
 
-
     def __str__(self):
         x = round(float(self.summa) / float(self.rate), 2)
         return f"{self.summa} {self.currency} -> {x} {self.currency_after_transaction}"

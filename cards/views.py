@@ -9,7 +9,7 @@ from rolepermissions.checkers import has_role
 from rolepermissions.decorators import has_role_decorator
 from rolepermissions.mixins import HasRoleMixin
 
-from SberBank.roles import SimpleUser, BannedUser
+from SberBank.roles import BannedUser, SimpleUser
 from cards.forms import TransferMoneyByNumberForm
 from cards.models import Card
 from cards.services.cards_services import ParseService, TransferService

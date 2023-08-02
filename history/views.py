@@ -5,7 +5,7 @@ from rolepermissions.checkers import has_role
 from rolepermissions.mixins import HasRoleMixin
 
 from SberBank import CARD_TEMPLATE_BASE
-from SberBank.roles import VIPUser, SimpleUser, BannedUser
+from SberBank.roles import BannedUser, SimpleUser, VIPUser
 from cards.models import Card
 from history.models import BaseTransactionHistory
 from history.service.history_service import TransactionHistoryService

@@ -31,7 +31,7 @@ class BanUserService:
 
         send_mail(
             "Разбан",
-            f"Вы разбанены в банке СберБанк!",
+            "Вы разбанены в банке СберБанк!",
             EMAIL_HOST_USER,
             [user.username]
         )

@@ -7,7 +7,7 @@ from rolepermissions.roles import assign_role
 from SberBank.roles import SimpleUser
 from cards.services.cards_services import CardService
 from chat.models import Room
-from users.models import User, EmailVerification
+from users.models import EmailVerification, User
 
 
 class UserService:

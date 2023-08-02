@@ -34,7 +34,8 @@ class VIPService:
 class StatisticsService:
     def get_statistics_for_category(self, user, category, month):
         statistic = {}
-        for transaction in UserTransactionHistory.objects.filter(category=category, time__range=self.__get_month_range(month)):
+        for transaction in UserTransactionHistory.objects.filter(category=category,
+                                                                 time__range=self.__get_month_range(month)):
             currency = transaction.currency
             if currency in statistic:
                 if transaction.card.user == user:
@@ -56,7 +57,8 @@ class StatisticsService:
         statistics_neg = {}
 
         for category in Category.objects.filter(user=user):
-            for transaction in UserTransactionHistory.objects.filter(category=category, time__range=self.__get_month_range(month)):
+            for transaction in UserTransactionHistory.objects.filter(category=category,
+                                                                     time__range=self.__get_month_range(month)):
                 currency = transaction.currency
 
                 if transaction.card.user == user:

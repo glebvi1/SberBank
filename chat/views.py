@@ -4,7 +4,7 @@ from rolepermissions.checkers import has_role
 from rolepermissions.mixins import HasRoleMixin
 
 from SberBank import CARD_TEMPLATE_BASE, SYSTEM_ADMIN_TEMPLATE_BASE
-from SberBank.roles import SimpleUser, BannedUser, SystemAdmin
+from SberBank.roles import BannedUser, SimpleUser, SystemAdmin
 from chat.forms import MessageForm
 from chat.models import Message
 from users.models import User

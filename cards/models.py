@@ -1,6 +1,7 @@
 from django.db import models
-from users.models import User
 from django.utils.translation import gettext_lazy
+
+from users.models import User
 
 
 class Card(models.Model):
@@ -24,7 +25,7 @@ class Card(models.Model):
 
         for i in range(len(current_number)):
             number_to_view += current_number[i]
-            if (i+1)%4 == 0 and i != 15:
+            if (i+1) % 4 == 0 and i != 15:
                 number_to_view += "-"
 
         return number_to_view

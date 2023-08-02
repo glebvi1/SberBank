@@ -1,5 +1,6 @@
 from django.urls import path
-from cards.views import my_card, transfer_currency, CurrenciesView
+
+from cards.views import CurrenciesView, my_card, transfer_currency
 
 app_name = "cards"
 

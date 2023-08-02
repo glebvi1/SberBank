@@ -10,12 +10,11 @@ from rolepermissions.checkers import has_role
 from rolepermissions.decorators import has_role_decorator
 from rolepermissions.mixins import HasRoleMixin
 
-from SberBank.roles import VIPUser, SimpleUser
+from SberBank.roles import SimpleUser, VIPUser
 from cards.models import Card
 from vip_users.forms import CategoryCreateForm
 from vip_users.models import Category
-from vip_users.services.vip_services import StatisticsService
-from vip_users.services.vip_services import VIPService
+from vip_users.services.vip_services import StatisticsService, VIPService
 
 
 @login_required
@@ -106,41 +105,3 @@ class StatisticsForCategory(HasRoleMixin, TemplateView):
         context["statistic"] = StatisticsService().get_statistics_for_category(self.request.user, category, 8)
         print(context["statistic"])
         return context
-
-
-"""
-[
-category1: {
-    RUB: int
-    DOL: int
-    EUR: int
-    YUA: int
-} 
-
-category2: {
-    RUB: int
-    DOL: int
-    EUR: int
-    YUA: int
-} 
-
-]
-"""
-
-"""
-
-RUB: {
-    category1: int
-    categroy2: int
-    ...
-    ...
-}
-
-Рубли, расходы:
-[cat1, cat2, cat3, ...]
-[s1, s2, s3, ...]
-Рубли, доходы:
-[cat1, cat2, cat3, ...]
-[s1, s2, s3, ...]
-
-"""

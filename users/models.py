@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from django.db import models
 
 from SberBank.settings import EMAIL_HOST_USER
-from users import EV_SUBJECT, EV_HELLO_MESSAGE
+from users import EV_HELLO_MESSAGE, EV_SUBJECT
 
 
 class User(AbstractUser):

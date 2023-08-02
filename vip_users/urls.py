@@ -1,7 +1,8 @@
 from django.urls import path
 
-from vip_users.views import create_category, CategoriesListView, bind_transaction, buy_vip, \
-    MonthStatisticsCategory, StatisticsForCategory
+from vip_users.views import (CategoriesListView, MonthStatisticsCategory,
+                             StatisticsForCategory, bind_transaction, buy_vip,
+                             create_category)
 
 app_name = "vip_users"
 

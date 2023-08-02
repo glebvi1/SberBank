@@ -1,4 +1,5 @@
 from django.urls import path
+
 from chat.views import ChatView
 
 app_name = "chat"

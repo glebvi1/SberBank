@@ -2,8 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
@@ -12,11 +11,12 @@ from rolepermissions.decorators import has_role_decorator
 from rolepermissions.mixins import HasRoleMixin
 
 from SberBank import SYSTEM_ADMIN_TEMPLATE_BASE
-from SberBank.roles import SystemAdmin, BannedUser
+from SberBank.roles import BannedUser, SystemAdmin
 from cards.models import Card
 from history.models import BaseTransactionHistory
 from history.service.history_service import TransactionHistoryService
-from system_admin.forms import SearchUsersByNumberForm, SearchUsersByEmailForm, SearchUsersByFIOForm, BanningUserForm
+from system_admin.forms import (BanningUserForm, SearchUsersByEmailForm,
+                                SearchUsersByFIOForm, SearchUsersByNumberForm)
 from system_admin.services.system_admin_services import BanUserService
 from users.models import User
 

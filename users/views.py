@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, FormView
@@ -12,10 +12,11 @@ from django.views.generic.list import ListView
 from rolepermissions.checkers import has_role
 from rolepermissions.mixins import HasRoleMixin
 
-from SberBank import SYSTEM_ADMIN_TEMPLATE_BASE, CARD_TEMPLATE_BASE
-from SberBank.roles import SimpleUser, SystemAdmin, BannedUser
+from SberBank import CARD_TEMPLATE_BASE, SYSTEM_ADMIN_TEMPLATE_BASE
+from SberBank.roles import BannedUser, SimpleUser, SystemAdmin
 from cards.models import Card
-from users.forms import UserLoginForm, UserRegistrationForm, ForgotPasswordForm, ResetPasswordForm
+from users.forms import (ForgotPasswordForm, ResetPasswordForm, UserLoginForm,
+                         UserRegistrationForm)
 from users.models import User
 from users.services.users_service import UserService
 
