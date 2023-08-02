@@ -1,11 +1,13 @@
+import uuid
+
+from captcha.fields import CaptchaField
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.mail import send_mail
+
 from SberBank.settings import EMAIL_HOST_USER
-import uuid
 from users.models import User
 from users.services.users_service import UserService
-from captcha.fields import CaptchaField
 
 
 class UserLoginForm(AuthenticationForm):

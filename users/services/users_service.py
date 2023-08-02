@@ -1,13 +1,10 @@
-import uuid
-from datetime import timedelta
-
-from django.utils.timezone import now
 from rolepermissions.roles import assign_role
+
 from SberBank.roles import SimpleUser
 from cards.services.cards_services import CardService
 from chat.models import Room
-from users.models import EmailVerification
-from users.models import User
+from users.models import User, EmailVerification
+from users.tasks import send_verification_email
 
 
 class UserService:
@@ -17,13 +14,7 @@ class UserService:
         CardService().add_card_to_user(user, is_first=True)
         assign_role(user, SimpleUser)
         Room.objects.create(user=user)
-        self.__send_verification_email(user)
-
-    def __send_verification_email(self, user):
-        date_finish = now() + timedelta(days=1)
-        code = uuid.uuid4()
-        verification = EmailVerification.objects.create(user=user, code=code, date_finish=date_finish)
-        verification.send_email()
+        send_verification_email.delay(user.id)
 
     def verificate(self, email, code):
         user = User.objects.filter(username=email)
