@@ -10,6 +10,7 @@ from rolepermissions.decorators import has_role_decorator
 from rolepermissions.mixins import HasRoleMixin
 
 from SberBank.roles import BannedUser, SimpleUser
+from cards import CURRENCY_BALANCE
 from cards.forms import TransferMoneyByNumberForm
 from cards.models import Card
 from cards.services.cards_services import ParseService, TransferService
@@ -75,6 +76,9 @@ class CurrenciesView(HasRoleMixin, TemplateView):
 @login_required
 @has_role_decorator(SimpleUser)
 def transfer_currency(request, card_id, currency):
-    card1 = Card.objects.get(id=card_id)
-    TransferService().transfer_currency(card1, currency)
+    if TransferService().check_transfer_currency(card_id, currency):
+        messages.success(request, "Перевод успешен!")
+        TransferService().transfer_currency(card_id, currency)
+    else:
+        messages.error(request, f"Для перевода денег в другую валюту, баланс на карте должен быть от {CURRENCY_BALANCE}!")
     return HttpResponseRedirect(reverse("cards:my_card", args=(card_id,)))

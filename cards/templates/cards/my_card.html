@@ -2,56 +2,64 @@
 
 {% block content %}
 
-<h3>Баланс: {{ card.balance_to_view }} {{ card.currency_to_view }}</h3>
-<h3>Номер: {{ card.number_to_view }}</h3>
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
 
-{% if is_banned %}
-<font color="red"><h6>Вы забанены и не можете совершать переводы!</h6></font>
-{% endif %}
+    <h3>Баланс: {{ card.balance_to_view }} {{ card.currency_to_view }}</h3>
+    <h3>Номер: {{ card.number_to_view }}</h3>
 
-{% if not is_banned %}
-<h6>Перевод другому пользователю по номеру карты</h6>
-<form action="{% url 'cards:my_card' card.id %}" method="POST">
-    {% csrf_token %}
+    {% if is_banned %}
+        <font color="red"><h6>Вы забанены и не можете совершать переводы!</h6></font>
+    {% endif %}
 
-    <div class="form-group">
-        {% if is_confirm %}
-        <label>Номер карты: <input value="{{ form.number.value }}" type="text" name="number" readonly/></label>
+    {% if not is_banned %}
+        <h6>Перевод другому пользователю по номеру карты</h6>
+        <form action="{% url 'cards:my_card' card.id %}" method="POST">
+            {% csrf_token %}
 
-        {% else %}
-        <label for="{{ form.number.id_for_label }}">
-            Номер карты
-        </label>{{ form.number }}
-        {% endif %}
-    </div>
+            <div class="form-group">
+                {% if is_confirm %}
+                    <label>Номер карты: <input value="{{ form.number.value }}" type="text" name="number" readonly/></label>
 
-    <div class="form-group">
-        {% if is_confirm %}
-        <label>Сумма:<input value="{{ form.summa.value }}" type="number" name="summa" readonly/></label>
+                {% else %}
+                    <label for="{{ form.number.id_for_label }}">
+                        Номер карты
+                    </label>{{ form.number }}
+                {% endif %}
+            </div>
 
-        {% else %}
+            <div class="form-group">
+                {% if is_confirm %}
+                    <label>Сумма:<input value="{{ form.summa.value }}" type="number" name="summa" readonly/></label>
 
-        <label for="{{ form.summa.id_for_label }}">
-            Сумма
-        </label>
-        {{ form.summa }}
-        {% endif %}
-    </div>
+                {% else %}
+
+                    <label for="{{ form.summa.id_for_label }}">
+                        Сумма
+                    </label>
+                    {{ form.summa }}
+                {% endif %}
+            </div>
+
+            {% if is_confirm %}
+                <input class="btn btn-primary" type="submit" value="Подтвердить" name="confirm_translate_form">
+                <input class="btn btn-primary" type="submit" value="Отклонить">
+            {% else %}
+                <input class="btn btn-primary" type="submit" value="Перевести" name="input_translate_from">
+            {% endif %}
+        </form>
+    {% endif %}
 
     {% if is_confirm %}
-    <input class="btn btn-primary" type="submit" value="Подтвердить" name="confirm_translate_form">
-    <input class="btn btn-primary" type="submit" value="Отклонить">
+        <h6>Подтвердите перевод: </h6>
+        <p>Пользователь: {{ card_transfer.user.get_FIO }}</p>
+        <p>Сумма перевода: {{ form.summa.value }} {{ card.currency_to_view }}</p>
     {% else %}
-    <input class="btn btn-primary" type="submit" value="Перевести" name="input_translate_from">
+        {{ confirm_message }}
     {% endif %}
-</form>
-{% endif %}
-
-{% if is_confirm %}
-    <h6>Подтвердите перевод: </h6>
-    <p>Пользователь: {{ card_transfer.user.get_FIO }}</p>
-    <p>Сумма перевода: {{ form.summa.value }} {{ card.currency_to_view }}</p>
-{% else %}
-    {{ confirm_message }}
-{% endif %}
 {% endblock %}

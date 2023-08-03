@@ -1,5 +1,6 @@
 import calendar
 from datetime import date
+from typing import Dict, Tuple
 
 from rolepermissions.roles import assign_role
 
@@ -7,14 +8,20 @@ from SberBank.roles import VIPUser
 from cards import MESSAGE_NOT_ENOUGH_BALANCE
 from cards.models import Card
 from history.models import UserTransactionHistory
+from users.models import User
 from vip_users import VIP_COST
 from vip_users.models import Category
 
 
 class VIPService:
-    def buy_vip(self, user, card_id):
+    def buy_vip(self, user: User, card_id: int) -> Tuple[str, bool]:
+        """Покупка VIP роли
+        @param user: пользователь, который покупает VIP
+        @param card_id: карта, которой пользователь расплачевается
+        @return: Tuple[str, bool]
+        """
         card = Card.objects.get(id=card_id)
-        # TODO: TransferService().transfer()
+        # TODO: TransferService().transfer(), создать админовскую карту
 
         if card.balance < VIP_COST:
             return MESSAGE_NOT_ENOUGH_BALANCE, False
@@ -23,7 +30,12 @@ class VIPService:
         assign_role(user, VIPUser)
         return "", True
 
-    def add_category_to_transaction(self, category_id, transaction_id):
+    def add_category_to_transaction(self, category_id: int, transaction_id: int) -> None:
+        """Присваевает транзакции категорию
+        @param category_id: id категории
+        @param transaction_id: id транзакции
+        @return: None
+        """
         category = Category.objects.get(id=category_id)
         transaction = UserTransactionHistory.objects.get(id=transaction_id)
 
@@ -32,7 +44,14 @@ class VIPService:
 
 
 class StatisticsService:
-    def get_statistics_for_category(self, user, category, month):
+    def get_statistics_for_category(self, user: User, category: Category, month: int) -> Dict[str, Dict[str, float]]:
+        """Создает статистику для конкретной категории (доход-расход) за календарный месяц (01.month - last_day.month).
+        Разные валюты учитываются.
+        @param user: пользователь
+        @param category: категория
+        @param month: месяц (1..12)
+        @return: Dict[валюта1: Dict[расход/доход, общая сумма за месяц], ...]
+        """
         statistic = {}
         for transaction in UserTransactionHistory.objects.filter(category=category,
                                                                  time__range=self.__get_month_range(month)):
@@ -52,7 +71,14 @@ class StatisticsService:
                     statistic[currency]["-"] = 0
         return statistic
 
-    def get_global_statistics_for_month(self, user, month):
+    def get_global_statistics_for_month(self, user: User, month: int) -> \
+            Tuple[Dict[str, Dict[str, float]], Dict[str, Dict[str, float]]]:
+        """Статистика для всех категорий за календарный месяц (01.month - last_day.month).
+        @param user: пользователь, для его категорий создается статистика
+        @param month: месяц (1..12)
+        @return: Два словаря: первый с доходами, второй с расходами. Вид:
+        Dict[валюта1: Dict[категория1: сумма за месяц, категория2: сумма за месяц, ...], ...]
+        """
         statistics_plus = {}
         statistics_neg = {}
 
@@ -68,7 +94,14 @@ class StatisticsService:
 
         return statistics_plus, statistics_neg
 
-    def __add_category(self, statistics, currency, name, summa):
+    def __add_category(self, statistics: dict, currency: str, name: str, summa: float):
+        """Добавляет категорию к словарю statistics
+        @param statistics: исходный словарь
+        @param currency: валюта
+        @param name: название категории
+        @param summa: сумма
+        @return:
+        """
         if currency in statistics:
             if name in statistics[currency]:
                 statistics[currency][name] += summa
@@ -77,7 +110,11 @@ class StatisticsService:
         else:
             statistics[currency] = {name: summa}
 
-    def __get_month_range(self, month):
+    def __get_month_range(self, month: int) -> tuple[date, date]:
+        """Создает две даты: начало и конец месяца
+        @param month: месяц (1..12)
+        @return: tuple[date, date]
+        """
         today = date.today().strftime("%d/%m/%Y").split("/")
         year = int(today[2])
         last_day = calendar.monthrange(year, month)[1]
