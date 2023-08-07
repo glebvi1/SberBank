@@ -21,6 +21,11 @@
         </div>
     {% endfor %}
 
+    <form method="post" action="{% url 'system_admin:add_card' current_user.id %}">
+        {% csrf_token %}
+        <input class="btn btn-primary" type="submit" value="Добавить карту">
+    </form>
+
     {% if not is_banned %}
     <form action="{% url 'system_admin:user_view' current_user.id %} " method="POST">
         {% csrf_token %}

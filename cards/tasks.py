@@ -36,3 +36,13 @@ def send_email_to_user_currency(summa, rate, currency_view, currency_after_trans
         EMAIL_HOST_USER,
         [email]
     )
+
+
+@shared_task
+def send_email_to_user_add_card(number, email):
+    send_mail(
+        "Добавлена карта",
+        f"Вам добавлена карта с номером: {number}",
+        EMAIL_HOST_USER,
+        [email]
+    )

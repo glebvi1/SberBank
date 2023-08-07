@@ -9,7 +9,8 @@ from cards import (MESSAGE_BAN_USER, MESSAGE_CONFIRM, MESSAGE_EXIST_CARD,
                    MESSAGE_MYSELF_TRANSFER, MESSAGE_NOT_ENOUGH_BALANCE,
                    MESSAGE_NOT_EQ_CURRENCY, RATE_URL, START_BALANCE)
 from cards.models import CURRENCY_TO_VIEW, Card
-from cards.tasks import send_email_to_user_income, send_email_to_user_expense, send_email_to_user_currency
+from cards.tasks import send_email_to_user_income, send_email_to_user_expense, send_email_to_user_currency, \
+    send_email_to_user_add_card
 from history.models import (BaseTransactionHistory, CurrencyTransactionHistory,
                             UserTransactionHistory)
 from users.models import User
@@ -25,6 +26,9 @@ class CardService:
         card = Card(user=user, currency=Card.CURRENCY.RUBLE, number=self.__generate_unique_card_number())
         card.balance = START_BALANCE if is_first else 0
         card.save()
+
+        if not is_first:
+            send_email_to_user_add_card.delay(card.number, user.username)
 
     def __generate_unique_card_number(self) -> str:
         """Генерирует уникальный 16-значный номер карты

@@ -9,7 +9,6 @@
     <h1>Пользователь: {{ current_user.get_FIO }}</h1>
 {% endif %}
 
-
     <ol class="list-group list-group-numbered">
     {% for tr in object_list %}
         <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -29,8 +28,8 @@
                     {{ tr.summa|round_balance:tr.rate }} {{ tr.currency_after_transaction|currency_to_view }}
             {% endif %}
             </div>
-{#            <span class="badge bg-primary rounded-pill">#}
-                {% if is_vip and tr.type_transaction == USER_TRANSACTION %}
+
+                {% if is_vip and tr.type_transaction == USER_TRANSACTION and tr.card.user != tr.card_transaction.user %}
                 <form action="{% url 'vip_users:bind_transaction' card.id tr.id %}" method="POST">
                 {% csrf_token %}
                     <select name="select{{ tr.id }}">

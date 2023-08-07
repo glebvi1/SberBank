@@ -13,6 +13,7 @@ from rolepermissions.mixins import HasRoleMixin
 from SberBank import SYSTEM_ADMIN_TEMPLATE_BASE
 from SberBank.roles import BannedUser, SystemAdmin
 from cards.models import Card
+from cards.services.cards_services import CardService
 from history.models import BaseTransactionHistory
 from history.service.history_service import TransactionHistoryService
 from system_admin.forms import (BanningUserForm, SearchUsersByEmailForm,
@@ -129,4 +130,11 @@ def search_users(request):
 @has_role_decorator(SystemAdmin)
 def unban(request, user_id):
     BanUserService().unban(user_id)
+    return HttpResponseRedirect(reverse("system_admin:user_view", args=(user_id,)))
+
+
+@login_required
+@has_role_decorator(SystemAdmin)
+def add_card(request, user_id):
+    CardService().add_card_to_user(User.objects.get(id=user_id))
     return HttpResponseRedirect(reverse("system_admin:user_view", args=(user_id,)))
