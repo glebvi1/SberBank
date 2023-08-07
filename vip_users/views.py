@@ -16,7 +16,8 @@ from SberBank.roles import SimpleUser, VIPUser
 from cards.models import Card
 from vip_users.forms import CategoryCreateForm
 from vip_users.models import Category
-from vip_users.services.vip_services import StatisticsService, VIPService, get_nearest_month_and_year
+from vip_users.services.vip_services import (StatisticsService, VIPService,
+                                             get_nearest_month_and_year)
 
 
 @login_required

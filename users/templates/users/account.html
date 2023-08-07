@@ -23,7 +23,7 @@
         <h6>Причина: {{ user.ban.reason }}</h6>
     {% endif %}
 
-    <div class="card-group" style="width: 40rem;">
+    <div class="card-group" style="width: max-content">
         {% for card in object_list %}
             <div class="card">
                 {% if user|has_role:'banned_user' %}

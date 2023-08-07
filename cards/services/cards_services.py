@@ -9,8 +9,9 @@ from cards import (MESSAGE_BAN_USER, MESSAGE_CONFIRM, MESSAGE_EXIST_CARD,
                    MESSAGE_MYSELF_TRANSFER, MESSAGE_NOT_ENOUGH_BALANCE,
                    MESSAGE_NOT_EQ_CURRENCY, RATE_URL, START_BALANCE)
 from cards.models import CURRENCY_TO_VIEW, Card
-from cards.tasks import send_email_to_user_income, send_email_to_user_expense, send_email_to_user_currency, \
-    send_email_to_user_add_card
+from cards.tasks import (send_email_to_user_add_card,
+                         send_email_to_user_currency,
+                         send_email_to_user_expense, send_email_to_user_income)
 from history.models import (BaseTransactionHistory, CurrencyTransactionHistory,
                             UserTransactionHistory)
 from users.models import User
