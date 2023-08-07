@@ -16,7 +16,7 @@ from SberBank.roles import SimpleUser, VIPUser
 from cards.models import Card
 from vip_users.forms import CategoryCreateForm
 from vip_users.models import Category
-from vip_users.services.vip_services import StatisticsService, VIPService
+from vip_users.services.vip_services import StatisticsService, VIPService, get_nearest_month_and_year
 
 
 @login_required
@@ -109,14 +109,9 @@ class MonthStatisticsCategory(HasRoleMixin, TemplateView):
 
         context["statistics_plus"] = statistics_plus
         context["statistics_neg"] = statistics_neg
-        context["month"] = month
-        context["year"] = year
 
-        context["pred_month"] = month - 1 if month != 1 else 12
-        context["next_month"] = month + 1 if month != 12 else 1
-
-        context["pred_year"] = year - 1 if month == 1 else year
-        context["next_year"] = year + 1 if month == 12 else year
+        context["pred_month"], context["next_month"], context["pred_year"], context["next_year"] =\
+            get_nearest_month_and_year(month, year)
 
         return context
 
@@ -128,7 +123,13 @@ class StatisticsForCategory(HasRoleMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        month = self.kwargs["month"]
+        year = self.kwargs["year"]
+
         category = Category.objects.get(id=self.kwargs["category_id"])
-        context["statistic"] = StatisticsService().get_statistics_for_category(self.request.user, category, 8)
-        print(context["statistic"])
+        context["statistic"] = StatisticsService().get_statistics_for_category(self.request.user, category, month, year)
+
+        context["pred_month"], context["next_month"], context["pred_year"], context["next_year"] = \
+            get_nearest_month_and_year(month, year)
+
         return context

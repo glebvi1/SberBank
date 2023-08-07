@@ -44,17 +44,18 @@ class VIPService:
 
 
 class StatisticsService:
-    def get_statistics_for_category(self, user: User, category: Category, month: int) -> Dict[str, Dict[str, float]]:
+    def get_statistics_for_category(self, user: User, category: Category, month: int, year: int) -> Dict[str, Dict[str, float]]:
         """Создает статистику для конкретной категории (доход-расход) за календарный месяц (01.month - last_day.month).
         Разные валюты учитываются.
         @param user: пользователь
         @param category: категория
         @param month: месяц (1..12)
+        @param year: год
         @return: Dict[валюта1: Dict[расход/доход, общая сумма за месяц], ...]
         """
         statistic = {}
         for transaction in UserTransactionHistory.objects.filter(category=category,
-                                                                 time__range=self.__get_month_range(month)):
+                                                                 time__range=self.__get_month_range(month, year)):
             currency = transaction.currency
             if currency in statistic:
                 if transaction.card.user == user:
@@ -123,3 +124,13 @@ class StatisticsService:
         end_date = date(year, month, last_day)
 
         return start_date, end_date
+
+
+def get_nearest_month_and_year(month, year):
+    pred_month = month - 1 if month != 1 else 12
+    next_month = month + 1 if month != 12 else 1
+
+    pred_year = year - 1 if month == 1 else year
+    next_year = year + 1 if month == 12 else year
+
+    return pred_month, next_month, pred_year, next_year

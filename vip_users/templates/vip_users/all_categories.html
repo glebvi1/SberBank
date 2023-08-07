@@ -11,7 +11,7 @@
                 <div class="fw-bold"><b>{{ category.name }}</b></div>
                 {{ category.description }}
             </div>
-            <a href="{% url 'vip_users:statistics_for_category' category.id %}">
+            <a href="{% url 'vip_users:statistics_for_category' category.id month year %}">
                 <span class="badge badge-primary badge-pill">Статистика</span>
             </a>
         </li>
