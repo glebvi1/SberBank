@@ -2,15 +2,14 @@ import random
 from typing import Optional, Tuple
 
 import requests
-from django.core.mail import send_mail
 from rolepermissions.checkers import has_role
 
 from SberBank.roles import BannedUser, VIPUser
-from SberBank.settings import EMAIL_HOST_USER
 from cards import (MESSAGE_BAN_USER, MESSAGE_CONFIRM, MESSAGE_EXIST_CARD,
                    MESSAGE_MYSELF_TRANSFER, MESSAGE_NOT_ENOUGH_BALANCE,
                    MESSAGE_NOT_EQ_CURRENCY, RATE_URL, START_BALANCE)
 from cards.models import CURRENCY_TO_VIEW, Card
+from cards.tasks import send_email_to_user_income, send_email_to_user_expense, send_email_to_user_currency
 from history.models import (BaseTransactionHistory, CurrencyTransactionHistory,
                             UserTransactionHistory)
 from users.models import User
@@ -46,36 +45,27 @@ class CardService:
 class TransferService:
     def __send_mail_to_user_income(self, transaction: UserTransactionHistory):
         if has_role(transaction.card_transaction.user, VIPUser):
-            send_mail(
-                "Поступление денег",
-                f"Вам перевели {transaction.summa} {transaction.card.currency_to_view()}."
-                f"\nОт: {transaction.card.user.get_FIO()}",
-                EMAIL_HOST_USER,
-                [transaction.card_transaction.user.username]
-            )
+            send_email_to_user_income.delay(fio=transaction.card.user.get_FIO(),
+                                            summa=transaction.summa,
+                                            currency_to_view=transaction.card.currency_to_view(),
+                                            email=transaction.card_transaction.user.username)
 
     def __send_mail_to_user_expense(self, transaction: UserTransactionHistory):
         if has_role(transaction.card.user, VIPUser):
-            send_mail(
-                "Списание денег",
-                f"Вы перевели {transaction.summa} {transaction.card.currency_to_view()}."
-                f"\nПолучатель: {transaction.card_transaction.user.get_FIO()}",
-                EMAIL_HOST_USER,
-                [transaction.card.user.username]
-            )
+            send_email_to_user_expense.delay(fio=transaction.card_transaction.user.get_FIO(),
+                                             summa=transaction.summa,
+                                             currency_to_view=transaction.card.currency_to_view(),
+                                             email=transaction.card.user.username)
 
     def __send_mail_to_user_currency(self, transaction: CurrencyTransactionHistory):
         if has_role(transaction.card.user, VIPUser):
             currency_after_transaction_view = transaction.card.currency_to_view()
             currency_view = CURRENCY_TO_VIEW[transaction.currency]
-            send_mail(
-                "Перевод валюты",
-                f"Вы перевели {round(transaction.summa, 2)} {currency_view} = "
-                f"{round(transaction.summa / transaction.rate, 2)} {currency_after_transaction_view}."
-                f"\nПо курсу: 1 {currency_view} = {round(transaction.rate, 2)} {currency_after_transaction_view}",
-                EMAIL_HOST_USER,
-                [transaction.card.user.username]
-            )
+            send_email_to_user_currency.delay(summa=transaction.summa,
+                                              rate=transaction.rate,
+                                              currency_view=currency_view,
+                                              currency_after_transaction_view=currency_after_transaction_view,
+                                              email=transaction.card.user.username)
 
     def transfer_currency(self, card_id: int, currency: str) -> None:
         """Перевод валюты карты в другую валюту

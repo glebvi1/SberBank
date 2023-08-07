@@ -30,7 +30,7 @@ class Card(models.Model):
 
         return number_to_view
 
-    def currency_to_view(self):
+    def currency_to_view(self) -> str:
         return CURRENCY_TO_VIEW[self.currency]
 
     def balance_to_view(self):
