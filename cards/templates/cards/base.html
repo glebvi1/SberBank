@@ -32,7 +32,7 @@
         {% else %}
             {% if user|has_role:'vip_user' %}
             <a class="navbar-brand" href="{% url 'vip_users:all_categories' %}">Категории</a>
-            <a class="navbar-brand" href="{% url 'vip_users:statistics' %}">Статистика</a>
+            <a class="navbar-brand" href="{% url 'vip_users:statistics' month year %}">Статистика</a>
             {% else %}
             <a class="navbar-brand" href="{% url 'vip_users:buy_vip' %}">VIP-подписка</a>
             {% endif %}

@@ -71,11 +71,12 @@ class StatisticsService:
                     statistic[currency]["-"] = 0
         return statistic
 
-    def get_global_statistics_for_month(self, user: User, month: int) -> \
+    def get_global_statistics_for_month(self, user: User, month: int, year: int) -> \
             Tuple[Dict[str, Dict[str, float]], Dict[str, Dict[str, float]]]:
         """Статистика для всех категорий за календарный месяц (01.month - last_day.month).
         @param user: пользователь, для его категорий создается статистика
         @param month: месяц (1..12)
+        @param year: год
         @return: Два словаря: первый с доходами, второй с расходами. Вид:
         Dict[валюта1: Dict[категория1: сумма за месяц, категория2: сумма за месяц, ...], ...]
         """
@@ -84,7 +85,7 @@ class StatisticsService:
 
         for category in Category.objects.filter(user=user):
             for transaction in UserTransactionHistory.objects.filter(category=category,
-                                                                     time__range=self.__get_month_range(month)):
+                                                                     time__range=self.__get_month_range(month, year)):
                 currency = transaction.currency
 
                 if transaction.card.user == user:
@@ -110,13 +111,12 @@ class StatisticsService:
         else:
             statistics[currency] = {name: summa}
 
-    def __get_month_range(self, month: int) -> tuple[date, date]:
+    def __get_month_range(self, month: int, year: int) -> tuple[date, date]:
         """Создает две даты: начало и конец месяца
         @param month: месяц (1..12)
+        @param year: год
         @return: tuple[date, date]
         """
-        today = date.today().strftime("%d/%m/%Y").split("/")
-        year = int(today[2])
         last_day = calendar.monthrange(year, month)[1]
 
         start_date = date(year, month, 1)

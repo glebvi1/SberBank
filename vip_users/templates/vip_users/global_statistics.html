@@ -78,4 +78,7 @@
         {% endfor %}
 </script>
 
+    <a href="{% url 'vip_users:statistics' pred_month pred_year %}">Предыдущий месяц</a>
+    <a href="{% url 'vip_users:statistics' next_month next_year %}">Следующий месяц</a>
+
 {% endblock %}

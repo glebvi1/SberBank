@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
@@ -13,7 +15,7 @@ from rolepermissions.checkers import has_role
 from rolepermissions.mixins import HasRoleMixin
 
 from SberBank import CARD_TEMPLATE_BASE, SYSTEM_ADMIN_TEMPLATE_BASE
-from SberBank.roles import BannedUser, SimpleUser, SystemAdmin
+from SberBank.roles import BannedUser, SimpleUser, SystemAdmin, VIPUser
 from cards.models import Card
 from users.forms import (ForgotPasswordForm, ResetPasswordForm, UserLoginForm,
                          UserRegistrationForm)
@@ -36,6 +38,10 @@ class AccountView(HasRoleMixin, ListView):
             context["base"] = SYSTEM_ADMIN_TEMPLATE_BASE
         elif has_role(self.request.user, SimpleUser) or has_role(self.request.user, BannedUser):
             context["base"] = CARD_TEMPLATE_BASE
+        if has_role(self.request.user, VIPUser):
+            context["month"] = datetime.now().month
+            context["year"] = datetime.now().year
+
         return context
 
 

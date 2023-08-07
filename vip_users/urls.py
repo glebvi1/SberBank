@@ -13,6 +13,6 @@ urlpatterns = [
     path("categories/create", create_category, name="create_category"),
     path("categories/bind/<int:card_id>/<int:transaction_id>/", bind_transaction, name="bind_transaction"),
 
-    path("statistics/", MonthStatisticsCategory.as_view(), name="statistics"),
+    path("statistics/<int:month>/<int:year>", MonthStatisticsCategory.as_view(), name="statistics"),
     path("statistics/<int:category_id>", StatisticsForCategory.as_view(), name="statistics_for_category"),
 ]

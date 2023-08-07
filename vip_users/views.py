@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -23,7 +25,7 @@ def buy_vip(request):
     if has_role(request.user, VIPUser):
         messages.error(request, "Вы уже VIP пользователь!")
         return HttpResponseRedirect(reverse("users:account"))
-    context = {"cards": Card.objects.filter(user=request.user)}
+    context = {"cards": Card.objects.filter(user=request.user),}
 
     if request.method == "POST":
         print(request.POST["card_id"])
@@ -55,7 +57,13 @@ def create_category(request):
     else:
         form = CategoryCreateForm()
 
-    return render(request, "vip_users/create_category.html", {"form": form})
+    context = {
+        "form": form,
+        "month": datetime.now().month,
+        "year": datetime.now().year,
+    }
+
+    return render(request, "vip_users/create_category.html", context)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -63,6 +71,13 @@ class CategoriesListView(HasRoleMixin, ListView):
     allowed_roles = [VIPUser]
     template_name = "vip_users/all_categories.html"
     model = Category
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["month"] = datetime.now().month
+        context["year"] = datetime.now().year
+
+        return context
 
     def get_queryset(self):
         return Category.objects.filter(user=self.request.user)
@@ -84,12 +99,24 @@ class MonthStatisticsCategory(HasRoleMixin, TemplateView):
     template_name = "vip_users/global_statistics.html"
 
     def get_context_data(self, **kwargs):
-        # TODO: Сделать пагинацию по месяцам
         context = super().get_context_data(**kwargs)
-        statistics_plus, statistics_neg = StatisticsService().get_global_statistics_for_month(self.request.user, 8)
+
+        month = self.kwargs["month"]
+        year = self.kwargs["year"]
+
+        statistics_plus, statistics_neg = StatisticsService()\
+            .get_global_statistics_for_month(self.request.user, month, year)
 
         context["statistics_plus"] = statistics_plus
         context["statistics_neg"] = statistics_neg
+        context["month"] = month
+        context["year"] = year
+
+        context["pred_month"] = month - 1 if month != 1 else 12
+        context["next_month"] = month + 1 if month != 12 else 1
+
+        context["pred_year"] = year - 1 if month == 1 else year
+        context["next_year"] = year + 1 if month == 12 else year
 
         return context
 
