@@ -151,4 +151,7 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
 # Roles
-ROLEPERMISSIONS_MODULE = 'SberBank.roles'
+ROLEPERMISSIONS_MODULE = "SberBank.roles"
+
+# Celery with RabbitMQ
+CELERY_BROKER_URL = "amqp://localhost"
