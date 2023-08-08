@@ -48,7 +48,7 @@ def create_category(request):
     if request.method == "POST":
         form = CategoryCreateForm(data=request.POST)
         if form.is_valid():
-            if not VIPService().check_new_category(request.user, form["name"].value()):
+            if not VIPService().check_create_category(request.user, form["name"].value()):
                 messages.error(request, "Категория с таким названием уже существует!")
                 return render(request, "vip_users/create_category.html", {"form": form})
             form = form.save(commit=False)
@@ -155,7 +155,7 @@ class CategoryEditView(HasRoleMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        if not VIPService().check_new_category(self.request.user, form["name"].value(), self.kwargs["pk"]):
+        if not VIPService().check_update_category(self.request.user, form["name"].value(), self.kwargs["pk"]):
             messages.error(self.request, "Категория с таким названием уже существует!")
             return HttpResponseRedirect(reverse("vip_users:edit_category", args=(self.kwargs["pk"],)))
         form.save()

@@ -27,12 +27,13 @@
         </div>
 
         <input class="btn btn-primary" type="submit" value="Сохранить">
-
     </form>
 
+    {% if not is_create %}
     <form action="{% url 'vip_users:delete_category' category.id %}" method="POST">
         {% csrf_token %}
         <input class="btn btn-primary" type="submit" value="Удалить">
     </form>
+    {% endif %}
 
 {% endblock %}

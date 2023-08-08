@@ -42,13 +42,26 @@ class VIPService:
         transaction.category = category
         transaction.save()
 
-    def check_new_category(self, user: User, category_name, not_edit_category_id):
+    def check_update_category(self, user: User, category_name: str, not_edit_category_id) -> bool:
+        """Проверка на обновление категории
+        @param user: пользователь
+        @param category_name: имя новой категории
+        @param not_edit_category_id: id старой категории (только для обновления)
+        @return: True, если можно обновить категорию, False - иначе
+        """
         pred_category = Category.objects.get(id=not_edit_category_id)
         if pred_category.name == category_name:
             return True
+        return self.check_create_category(user, category_name)
+
+    def check_create_category(self, user: User, category_name: str):
         return not Category.objects.filter(user=user, name=category_name).exists()
 
-    def delete_category(self, category_id):
+    def delete_category(self, category_id) -> None:
+        """Удаление категории по id
+        @param category_id: id категории, которую нужно удалить
+        @return: None
+        """
         category = Category.objects.get(id=category_id)
         category.delete()
 
@@ -106,13 +119,13 @@ class StatisticsService:
 
         return statistics_plus, statistics_neg
 
-    def __add_category(self, statistics: dict, currency: str, name: str, summa: float):
+    def __add_category(self, statistics: dict, currency: str, name: str, summa: float) -> None:
         """Добавляет категорию к словарю statistics
         @param statistics: исходный словарь
         @param currency: валюта
         @param name: название категории
         @param summa: сумма
-        @return:
+        @return: None
         """
         if currency in statistics:
             if name in statistics[currency]:
