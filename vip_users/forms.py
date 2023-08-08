@@ -8,10 +8,11 @@ class CategoryCreateForm(forms.ModelForm):
         "placeholder": "Введите название: "
     }))
 
-    description = forms.CharField(widget=forms.TextInput(attrs={
+    description = forms.CharField(widget=forms.Textarea(attrs={
         "placeholder": "Введите описание: : "
     }))
 
     class Meta:
         model = Category
+        fields = ["name", "description"]
         exclude = ["user"]

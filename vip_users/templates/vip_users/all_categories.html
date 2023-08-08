@@ -3,20 +3,25 @@
 {% block content %}
     <h1>Все категории: </h1>
 
-    <ol class="list-group list-group-numbered">
-    {% for category in object_list %}
-        <li class="list-group-item d-flex justify-content-between align-items-start">
-            <div class="ms-2 me-auto">
 
-                <div class="fw-bold"><b>{{ category.name }}</b></div>
-                {{ category.description }}
+    <div class="list-group">
+    {% for category in object_list %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+
+            <div class="ms-2 me-auto">
+            <div class="fw-bold"><b><a href="{% url 'vip_users:edit_category' category.id %}" style="color:black"
+               class="list-group-item-action">{{ category.name }}
+            </a></b></div>
+            {{ category.description }}
             </div>
+
             <a href="{% url 'vip_users:statistics_for_category' category.id month year %}">
                 <span class="badge badge-primary badge-pill">Статистика</span>
             </a>
         </li>
+
     {% endfor %}
-    </ol>
+</div>
 
     <a href="{% url 'vip_users:create_category' %}">Добавить категорию</a>
 

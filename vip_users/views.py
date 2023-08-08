@@ -4,9 +4,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, UpdateView
 from django.views.generic.list import ListView
 from rolepermissions.checkers import has_role
 from rolepermissions.decorators import has_role_decorator
@@ -48,7 +48,7 @@ def create_category(request):
     if request.method == "POST":
         form = CategoryCreateForm(data=request.POST)
         if form.is_valid():
-            if Category.objects.filter(user=request.user, name=form["name"].value()).exists():
+            if not VIPService().check_new_category(request.user, form["name"].value()):
                 messages.error(request, "Категория с таким названием уже существует!")
                 return render(request, "vip_users/create_category.html", {"form": form})
             form = form.save(commit=False)
@@ -62,6 +62,7 @@ def create_category(request):
         "form": form,
         "month": datetime.now().month,
         "year": datetime.now().year,
+        "is_create": True,
     }
 
     return render(request, "vip_users/create_category.html", context)
@@ -105,13 +106,13 @@ class MonthStatisticsCategory(HasRoleMixin, TemplateView):
         month = self.kwargs["month"]
         year = self.kwargs["year"]
 
-        statistics_plus, statistics_neg = StatisticsService()\
+        statistics_plus, statistics_neg = StatisticsService() \
             .get_global_statistics_for_month(self.request.user, month, year)
 
         context["statistics_plus"] = statistics_plus
         context["statistics_neg"] = statistics_neg
 
-        context["pred_month"], context["next_month"], context["pred_year"], context["next_year"] =\
+        context["pred_month"], context["next_month"], context["pred_year"], context["next_year"] = \
             get_nearest_month_and_year(month, year)
 
         return context
@@ -134,3 +135,35 @@ class StatisticsForCategory(HasRoleMixin, TemplateView):
             get_nearest_month_and_year(month, year)
 
         return context
+
+
+@method_decorator(login_required, name="dispatch")
+class CategoryEditView(HasRoleMixin, UpdateView):
+    allowed_roles = [VIPUser]
+    form_class = CategoryCreateForm
+    template_name = "vip_users/create_category.html"
+    model = Category
+    success_url = reverse_lazy("vip_users:all_categories")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["month"] = datetime.now().month
+        context["year"] = datetime.now().year
+        context["is_create"] = False
+
+        return context
+
+    def form_valid(self, form):
+        if not VIPService().check_new_category(self.request.user, form["name"].value(), self.kwargs["pk"]):
+            messages.error(self.request, "Категория с таким названием уже существует!")
+            return HttpResponseRedirect(reverse("vip_users:edit_category", args=(self.kwargs["pk"],)))
+        form.save()
+        return HttpResponseRedirect(reverse("vip_users:all_categories"))
+
+
+@login_required
+@has_role_decorator(VIPUser)
+def delete_category(request, pk):
+    VIPService().delete_category(pk)
+    return HttpResponseRedirect(reverse("vip_users:all_categories"))

@@ -42,6 +42,16 @@ class VIPService:
         transaction.category = category
         transaction.save()
 
+    def check_new_category(self, user: User, category_name, not_edit_category_id):
+        pred_category = Category.objects.get(id=not_edit_category_id)
+        if pred_category.name == category_name:
+            return True
+        return not Category.objects.filter(user=user, name=category_name).exists()
+
+    def delete_category(self, category_id):
+        category = Category.objects.get(id=category_id)
+        category.delete()
+
 
 class StatisticsService:
     def get_statistics_for_category(self, user: User, category: Category, month: int, year: int) -> Dict[str, Dict[str, float]]:
