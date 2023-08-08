@@ -46,7 +46,7 @@ class VIPService:
         """Проверка на обновление категории
         @param user: пользователь
         @param category_name: имя новой категории
-        @param not_edit_category_id: id старой категории (только для обновления)
+        @param not_edit_category_id: id старой категории
         @return: True, если можно обновить категорию, False - иначе
         """
         pred_category = Category.objects.get(id=not_edit_category_id)
@@ -55,6 +55,11 @@ class VIPService:
         return self.check_create_category(user, category_name)
 
     def check_create_category(self, user: User, category_name: str):
+        """Проверка на создании категории
+        @param user: пользователь
+        @param category_name: имя новой категории
+        @return: True, если можно создать категорию, False - иначе
+        """
         return not Category.objects.filter(user=user, name=category_name).exists()
 
     def delete_category(self, category_id) -> None:

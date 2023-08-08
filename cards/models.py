@@ -16,7 +16,7 @@ class Card(models.Model):
 
     currency = models.CharField(max_length=3, choices=CURRENCY.choices, default=CURRENCY.RUBLE)
     number = models.CharField(max_length=16, null=False, blank=False, unique=True)
-    balance = models.FloatField(null=False, blank=False)
+    balance = models.DecimalField(null=False, blank=False, max_digits=19, decimal_places=10)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
     def number_to_view(self):

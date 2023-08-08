@@ -87,12 +87,12 @@ class CategoriesListView(HasRoleMixin, ListView):
 
 @login_required
 @has_role_decorator(VIPUser)
-def bind_transaction(request, card_id, transaction_id):
+def bind_transaction(request, card_id, transaction_id, page):
     if request.method == "POST":
         category_id = request.POST[f"select{transaction_id}"]
         if not category_id == "None":
             VIPService().add_category_to_transaction(category_id, transaction_id)
-    return HttpResponseRedirect(reverse("history:card_history", args=(card_id,)))
+    return HttpResponseRedirect(reverse("history:card_history", args=(card_id,)) + "page/" + str(page))
 
 
 @method_decorator(login_required, name="dispatch")

@@ -17,7 +17,7 @@ class CardHistoryListView(HasRoleMixin, ListView):
     allowed_roles = [BannedUser, SimpleUser, VIPUser]
     template_name = "history/history.html"
     model = BaseTransactionHistory
-    paginate_by = 50
+    paginate_by = 10
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -31,6 +31,8 @@ class CardHistoryListView(HasRoleMixin, ListView):
         context["base"] = CARD_TEMPLATE_BASE
         context["is_admin"] = False
         context["is_vip"] = is_vip
+
+        context["page"] = self.kwargs["page"]
 
         if is_vip:
             context["categories"] = Category.objects.filter(user=self.request.user)

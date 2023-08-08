@@ -1,3 +1,5 @@
+import decimal
+
 from django.template.defaulttags import register
 
 from cards.models import Card
@@ -5,12 +7,12 @@ from cards.models import Card
 
 @register.filter
 def round_balance(balance, rate):
-    return round(balance / rate, 2)
+    return round(decimal.Decimal(balance) / rate, 2)
 
 
 @register.filter
 def my_round(balance):
-    return round(balance, 2)
+    return round(decimal.Decimal(balance), 2)
 
 
 @register.filter

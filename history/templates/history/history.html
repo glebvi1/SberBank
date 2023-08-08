@@ -30,7 +30,7 @@
             </div>
 
                 {% if is_vip and tr.type_transaction == USER_TRANSACTION and tr.card.user != tr.card_transaction.user %}
-                <form action="{% url 'vip_users:bind_transaction' card.id tr.id %}" method="POST">
+                <form action="{% url 'vip_users:bind_transaction' card.id tr.id page %}" method="POST">
                 {% csrf_token %}
                     <select name="select{{ tr.id }}">
                     <option value="None">-----</option>

@@ -27,7 +27,7 @@ class UserTransactionHistory(BaseTransactionHistory):
 class CurrencyTransactionHistory(BaseTransactionHistory):
     card = models.ForeignKey(to=Card, on_delete=models.CASCADE, related_name="currency_transactions")
     currency_after_transaction = models.CharField(max_length=3, choices=Card.CURRENCY.choices)
-    rate = models.FloatField(blank=False, null=False)
+    rate = models.DecimalField(blank=False, null=False, max_digits=19, decimal_places=10)
 
     def __str__(self):
         x = round(float(self.summa) / float(self.rate), 2)
