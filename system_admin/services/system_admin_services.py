@@ -1,9 +1,8 @@
-from django.core.mail import send_mail
-from rolepermissions.roles import assign_role, clear_roles, remove_role
+from rolepermissions.roles import assign_role, remove_role
 
 from SberBank.roles import BannedUser, SimpleUser
-from SberBank.settings import EMAIL_HOST_USER
 from system_admin.models import Ban
+from system_admin.tasks import send_email_to_ban_user, send_email_to_unban_user
 from users.models import User
 
 
@@ -11,15 +10,10 @@ class BanUserService:
     def ban_user(self, user_id, reason):
         user = User.objects.get(id=user_id)
         Ban.objects.create(banned_user=user, reason=reason)
-        clear_roles(user)  # TODO: сохранить роли
+        remove_role(user, SimpleUser)
         assign_role(user, BannedUser)
 
-        send_mail(
-            "Бан",
-            f"Вы забанены в банке СберБанк!\nПричина: {reason}",
-            EMAIL_HOST_USER,
-            [user.username]
-        )
+        send_email_to_ban_user.delay(reason, user.username)
 
     def unban(self, user_id):
         user = User.objects.get(id=user_id)
@@ -29,11 +23,4 @@ class BanUserService:
         ban = Ban.objects.get(banned_user=user)
         ban.delete()
 
-        send_mail(
-            "Разбан",
-            "Вы разбанены в банке СберБанк!",
-            EMAIL_HOST_USER,
-            [user.username]
-        )
-        # TODO: Если до бана пользователь был VIPUser, то тут он теряет VIP...
-        # TODO: Во время бана сохранять роли пользователя, здесь их просто возвращать
+        send_email_to_unban_user.delay(user.username)

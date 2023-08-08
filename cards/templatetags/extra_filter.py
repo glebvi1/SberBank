@@ -7,7 +7,7 @@ from cards.models import Card
 
 @register.filter
 def round_balance(balance, rate):
-    return round(decimal.Decimal(balance) / rate, 2)
+    return round(decimal.Decimal(balance) / decimal.Decimal(rate), 2)
 
 
 @register.filter

@@ -27,7 +27,9 @@
         <a class="navbar-brand" href="{% url 'users:account' %}">Личный кабинет</a>
         <a class="navbar-brand" href="{% url 'chat:room' user.room.id %}">Чат с админом</a>
         {% if card is not None %}
+        {% if not user|has_role:'banned_user' %}
         <a class="navbar-brand" href="{% url 'cards:currencies' card.id %}">Валюты</a>
+        {% endif %}
         <a class="navbar-brand" href="{% url 'history:card_history' card.id %}">История</a>
         {% else %}
             {% if user|has_role:'vip_user' %}

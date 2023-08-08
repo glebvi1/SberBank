@@ -1,3 +1,4 @@
+import decimal
 import random
 from typing import Optional, Tuple
 
@@ -83,7 +84,7 @@ class TransferService:
                                                  currency_after_transaction=currency, type_transaction=2)
 
         rate = self.__get_rate_by_currency(card, currency)
-        card.balance = card.balance / rate
+        card.balance = card.balance / decimal.Decimal(rate)
         card.currency = currency
         transaction.rate = rate
         card.save()

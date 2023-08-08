@@ -32,7 +32,10 @@ class CardHistoryListView(HasRoleMixin, ListView):
         context["is_admin"] = False
         context["is_vip"] = is_vip
 
-        context["page"] = self.kwargs["page"]
+        if "page" in self.kwargs:
+            context["page"] = self.kwargs["page"]
+        else:
+            context["page"] = 1
 
         if is_vip:
             context["categories"] = Category.objects.filter(user=self.request.user)
