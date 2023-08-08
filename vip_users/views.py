@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import TemplateView, UpdateView, CreateView
 from django.views.generic.list import ListView
 from rolepermissions.checkers import has_role
 from rolepermissions.decorators import has_role_decorator
@@ -42,30 +42,31 @@ def buy_vip(request):
     return render(request, "vip_users/buy_vip.html", context)
 
 
-@login_required
-@has_role_decorator(VIPUser)
-def create_category(request):
-    if request.method == "POST":
-        form = CategoryCreateForm(data=request.POST)
-        if form.is_valid():
-            if not VIPService().check_create_category(request.user, form["name"].value()):
-                messages.error(request, "Категория с таким названием уже существует!")
-                return render(request, "vip_users/create_category.html", {"form": form})
-            form = form.save(commit=False)
-            form.user = request.user
-            form.save()
-            return HttpResponseRedirect(reverse("vip_users:all_categories"))
-    else:
-        form = CategoryCreateForm()
+@method_decorator(login_required, name="dispatch")
+class CreateCategoryView(HasRoleMixin, CreateView):
+    allowed_roles = [VIPUser]
+    template_name = "vip_users/create_category.html"
+    model = Category
+    success_url = reverse_lazy("vip_users:all_categories")
+    form_class = CategoryCreateForm
 
-    context = {
-        "form": form,
-        "month": datetime.now().month,
-        "year": datetime.now().year,
-        "is_create": True,
-    }
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-    return render(request, "vip_users/create_category.html", context)
+        context["month"] = datetime.now().month
+        context["year"] = datetime.now().year
+        context["is_create"] = True
+
+        return context
+
+    def form_valid(self, form):
+        if not VIPService().check_create_category(self.request.user, form["name"].value()):
+            messages.error(self.request, "Категория с таким названием уже существует!")
+            return render(self.request, self.template_name, {"form": form})
+        form = form.save(commit=False)
+        form.user = self.request.user
+        form.save()
+        return HttpResponseRedirect(reverse("vip_users:all_categories"))
 
 
 @method_decorator(login_required, name="dispatch")
