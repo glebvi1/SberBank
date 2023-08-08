@@ -15,5 +15,6 @@ urlpatterns = [
     path("add_card/<int:user_id>/", add_card, name="add_card"),
 
     path("user_view/<int:user_id>/card_view/<int:card_id>", CardHistoryView.as_view(), name="card_view"),
-    path("user_view/<int:user_id>/card_view/<int:card_id>/page/<int:page>/", CardHistoryView.as_view(), name="paginator_history"),
+    path("user_view/<int:user_id>/card_view/<int:card_id>/page/<int:page>/", CardHistoryView.as_view(),
+         name="paginator_history"),
 ]

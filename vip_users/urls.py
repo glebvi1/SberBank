@@ -1,8 +1,9 @@
 from django.urls import path
 
-from vip_users.views import (CategoriesListView, MonthStatisticsCategory,
+from vip_users.views import (CategoriesListView, CategoryEditView,
+                             CreateCategoryView, MonthStatisticsCategory,
                              StatisticsForCategory, bind_transaction, buy_vip,
-                             CreateCategoryView, CategoryEditView, delete_category)
+                             delete_category)
 
 app_name = "vip_users"
 
@@ -17,5 +18,6 @@ urlpatterns = [
     path("category/bind/<int:card_id>/<int:transaction_id>/<int:page>/", bind_transaction, name="bind_transaction"),
 
     path("statistics/<int:month>/<int:year>/", MonthStatisticsCategory.as_view(), name="statistics"),
-    path("statistics/<int:category_id>/<int:month>/<int:year>/", StatisticsForCategory.as_view(), name="statistics_for_category"),
+    path("statistics/<int:category_id>/<int:month>/<int:year>/", StatisticsForCategory.as_view(),
+         name="statistics_for_category"),
 ]

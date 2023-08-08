@@ -80,5 +80,6 @@ def transfer_currency(request, card_id, currency):
         messages.success(request, "Перевод успешен!")
         TransferService().transfer_currency(card_id, currency)
     else:
-        messages.error(request, f"Для перевода денег в другую валюту, баланс на карте должен быть от {CURRENCY_BALANCE}!")
+        messages.error(request, f"Для перевода денег в другую валюту, "
+                                f"баланс на карте должен быть от {CURRENCY_BALANCE}!")
     return HttpResponseRedirect(reverse("cards:my_card", args=(card_id,)))

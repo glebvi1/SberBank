@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView, UpdateView, CreateView
+from django.views.generic import CreateView, TemplateView, UpdateView
 from django.views.generic.list import ListView
 from rolepermissions.checkers import has_role
 from rolepermissions.decorators import has_role_decorator
@@ -26,7 +26,7 @@ def buy_vip(request):
     if has_role(request.user, VIPUser):
         messages.error(request, "Вы уже VIP пользователь!")
         return HttpResponseRedirect(reverse("users:account"))
-    context = {"cards": Card.objects.filter(user=request.user),}
+    context = {"cards": Card.objects.filter(user=request.user)}
 
     if request.method == "POST":
         print(request.POST["card_id"])

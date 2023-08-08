@@ -101,7 +101,8 @@ class TransferService:
         """
 
         transaction = UserTransactionHistory(card=card1, summa=summa, currency=card1.currency,
-                                             card_transaction=card2, type_transaction=BaseTransactionHistory.TYPE_TRANSACTION.USER)
+                                             card_transaction=card2,
+                                             type_transaction=BaseTransactionHistory.TYPE_TRANSACTION.USER)
 
         card1.balance -= summa
         card2.balance += summa
