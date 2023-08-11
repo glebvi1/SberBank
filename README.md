@@ -3,6 +3,7 @@
 Проект написан на Python Django. Цель написания проекта - изучить Django. На клиенте используется HTML с DjangoTemplates, для дизайна использовал Bootstrap.
 
 Сайт копирует некоторые действия известного банка.
+
 Видео: https://disk.yandex.ru/d/JwsQ-AyZllRXXw
 
 ## Функционал
