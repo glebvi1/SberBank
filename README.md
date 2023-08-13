@@ -64,4 +64,5 @@
 2. Chart.js для рисования графиков
 3. Django-rolepermissions
 4. Django-captcha
-5. flake8 и isort (форматеры)
+5. Django-pytest
+6. flake8 и isort (форматеры)
